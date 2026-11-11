@@ -2,204 +2,544 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>SECTOR 7 // UFILAG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>UFILAG // SECTOR 7 CLINICAL OS</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #121417;
-      --panel: #1a1e24;
-      --amber: #ff9d00;
-      --amber-dim: #704500;
-      --text: #e0e6ed;
-      --border: #2c3440;
+      --tile-bg: #dce3e0;
+      --tile-line: #c4cfcb;
+      --panel-bg: #f4f7f5;
+      --panel-border: #94a69f;
+      --header-bg: #1e2d28;
+      --accent-green: #0f766e;
+      --accent-amber: #d97706;
+      --accent-red: #dc2626;
+      --text-dark: #111827;
+      --text-muted: #4b5563;
+      --crt-bg: #111a17;
+      --crt-text: #5eead4;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Consolas', 'Courier New', monospace;
-      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--tile-bg);
+      /* Эффект белого/мятного больничного кафеля */
+      background-image: 
+        linear-gradient(var(--tile-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--tile-line) 1px, transparent 1px);
+      background-size: 28px 28px;
+      color: var(--text-dark);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      padding: 10px;
     }
-    .crt-line {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(rgba(18, 20, 23, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
+
+    /* Корпус медицинского прибора */
+    .device-frame {
+      background: var(--panel-bg);
+      border: 2px solid var(--panel-border);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18), inset 0 1px 0 #fff;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
     }
-    .panel-header {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      padding: 12px;
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: var(--amber);
+
+    /* Шапка с кардиограммой */
+    .top-header {
+      background: var(--header-bg);
+      color: #fff;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
-      margin-bottom: 16px;
+      align-items: center;
+      border-bottom: 3px solid var(--accent-green);
     }
-    .screen {
+
+    .brand-box {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 1.5px;
+      color: #5eead4;
+    }
+    .brand-sub {
+      font-size: 10px;
+      color: #9ca3af;
+      letter-spacing: 0.5px;
+    }
+
+    .ecg-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0d1512;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #2d423b;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Прогресс расследования */
+    .progress-bar {
+      background: #e2e8f0;
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .step-badge {
+      background: var(--accent-amber);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* Навигационные кнопки-вкладки */
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #cbd5e1;
+      gap: 1px;
+      border-bottom: 2px solid var(--panel-border);
+    }
+    .nav-btn {
+      background: #e2e8f0;
+      border: none;
+      padding: 12px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-btn.active {
+      background: var(--panel-bg);
+      color: var(--accent-green);
+      box-shadow: inset 0 3px 0 var(--accent-green);
+    }
+    .nav-icon {
+      font-size: 16px;
+    }
+
+    /* Контентная часть */
+    .content-area {
       flex: 1;
-      border: 1px solid var(--border);
-      background: #0d0f12;
-      padding: 16px;
+      padding: 14px;
       overflow-y: auto;
-      font-size: 13px;
-      line-height: 1.6;
     }
-    .input-box {
-      margin-top: 16px;
+
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Стили папок и документов */
+    .folder-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .folder-btn {
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      border-left: 4px solid var(--accent-green);
+      border-radius: 4px;
+      padding: 10px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .folder-btn.selected {
+      background: #ccfbf1;
+      border-color: var(--accent-green);
+      color: #0f766e;
+    }
+
+    /* Медицинский бланк (просмотр документа) */
+    .paper-sheet {
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      border-top: 6px solid #1e293b;
+      border-radius: 4px;
+      padding: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #1e293b;
+    }
+    .paper-header {
+      border-bottom: 1px dashed #94a3b8;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .clue {
+      background: #fef3c7;
+      color: #b45309;
+      padding: 1px 4px;
+      font-weight: bold;
+      border-bottom: 1px solid #f59e0b;
+    }
+
+    /* Карточка задачи */
+    .module-box {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .module-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--header-bg);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Ввод и кнопки действия */
+    .input-group {
       display: flex;
       gap: 8px;
+      margin-top: 10px;
     }
-    input[type="text"] {
+    .text-input {
       flex: 1;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      color: var(--amber);
-      padding: 12px;
-      font-family: inherit;
-      outline: none;
+      padding: 11px 12px;
+      border: 2px solid #94a3b8;
+      border-radius: 4px;
       font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      background: #f8fafc;
+      outline: none;
     }
-    input[type="text"]:focus {
-      border-color: var(--amber);
+    .text-input:focus {
+      border-color: var(--accent-green);
+      background: #fff;
     }
-    button {
-      background: var(--amber);
-      color: #000;
+    .action-btn {
+      background: var(--accent-green);
+      color: #ffffff;
       border: none;
-      padding: 12px 18px;
+      border-radius: 4px;
+      padding: 11px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .action-btn:active {
+      opacity: 0.85;
+    }
+
+    /* Тумблеры в щитовой */
+    .breaker-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 10px 12px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    .switch-btn {
+      background: #cbd5e1;
+      color: #334155;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      min-width: 75px;
+    }
+    .switch-btn.active {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Экран монитора прибора */
+    .crt-monitor {
+      background: var(--crt-bg);
+      color: var(--crt-text);
+      font-family: 'Courier New', monospace;
+      padding: 14px;
+      border-radius: 6px;
+      border: 3px solid #334155;
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Кнопки выбора частоты */
+    .freq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .freq-btn {
+      background: #f1f5f9;
+      border: 2px solid #94a3b8;
+      border-radius: 4px;
+      padding: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .freq-btn.selected {
+      background: var(--accent-amber);
+      border-color: #b45309;
+      color: #fff;
+    }
+
+    /* Кодовая панель (Numpad) для сейфа */
+    .pin-display {
+      background: #0f172a;
+      color: #fbbf24;
+      font-family: 'Courier New', monospace;
+      font-size: 26px;
       font-weight: bold;
-      font-family: inherit;
-      cursor: pointer;
-    }
-    .btn-action {
-      display: block;
-      width: 100%;
-      background: var(--panel);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 12px;
-      margin: 10px 0;
-      text-align: left;
-      font-family: inherit;
-      cursor: pointer;
-    }
-    .btn-action:active {
-      border-color: var(--amber);
-      color: var(--amber);
-    }
-    .release-tag {
-      background: #1f1200;
-      border: 1px solid var(--amber);
-      color: var(--amber);
-      padding: 16px;
+      letter-spacing: 8px;
       text-align: center;
-      font-size: 20px;
-      letter-spacing: 3px;
-      margin: 20px 0;
-      font-weight: bold;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      border: 2px solid #334155;
     }
-    .hidden { display: none; }
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .num-key {
+      background: #e2e8f0;
+      border: 1px solid #94a3b8;
+      border-bottom: 3px solid #64748b;
+      border-radius: 6px;
+      padding: 14px 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+    }
+    .num-key:active {
+      transform: translateY(2px);
+      border-bottom-width: 1px;
+    }
+
+    .status-alert {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      display: none;
+    }
+    .status-alert.error {
+      display: block;
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #f87171;
+    }
+    .status-alert.success {
+      display: block;
+      background: #d1fae5;
+      color: #047857;
+      border: 1px solid #34d399;
+    }
+
+    .release-box {
+      background: #111827;
+      color: #fbbf24;
+      border: 2px solid #f59e0b;
+      border-radius: 6px;
+      padding: 18px;
+      text-align: center;
+      margin: 14px 0;
+    }
   </style>
 </head>
 <body>
-  <div class="crt-line"></div>
-  <div class="panel-header">
-    <span>UFILAG SYSTEMS</span>
-    <span>SYS.VER: 7.02</span>
-  </div>
 
-  <div class="screen">
-    <!-- ЭТАП 1 -->
-    <div id="step-1">
-      <p style="color: var(--amber);">[АРХИВНЫЙ ТЕРМИНАЛ: ИЗОЛЯТОР SECTOR 7]</p><br>
-      <p>Инициализация протокола допуска. Пациент: <b>«...ЯСН...»</b>.</p>
-      <p>Примечание старшей сестры: <i>«Блокировка памяти активна. Голосовой ключ совпадает со словом, возвращающим послушание...»</i></p>
-      
-      <div class="input-box">
-        <input type="text" id="ans-1" placeholder="Голосовой ключ">
-        <button onclick="check1()">ВВОД</button>
+  <div class="device-frame">
+    <!-- ШАПКА -->
+    <div class="top-header">
+      <div class="brand-box">
+        <span class="brand-title">UFILAG CLINICAL OS</span>
+        <span class="brand-sub">ИЗОЛЯТОР SECTOR 7 // ТЕРМИНАЛ ДОПУСКА</span>
       </div>
-      <p id="err-1" style="color: #ff4d4d; margin-top: 10px;" class="hidden">Отказ доступа: неверный ключ допуска.</p>
-    </div>
-
-    <!-- ЭТАП 2 -->
-    <div id="step-2" class="hidden">
-      <p style="color: var(--amber);">[КЛЮЧ ПРИНЯТ: «Тише»]</p><br>
-      <p>Главная магистраль обесточена. Для разблокировки шлюза направьте напряжение на распределительный узел:</p>
-      <button class="btn-action" onclick="fail()">[01] Серверная перфокарт</button>
-      <button class="btn-action" onclick="check2()">[03] Щитовая изолятора (Блок 3)</button>
-      <button class="btn-action" onclick="fail()">[05] Пневмопочта администрации</button>
-    </div>
-
-    <!-- ЭТАП 3 -->
-    <div id="step-3" class="hidden">
-      <p style="color: var(--amber);">[ПИТАНИЕ ПОДАНО. ШЛЮЗ РАЗБЛОКИРОВАН]</p><br>
-      <p>Внутренний журнал безопасности: <i>«Код аварийного дампа равен номеру блока (7) плюс число оставшихся дежурных на выходе (1)»</i>.</p>
-      
-      <div class="input-box">
-        <input type="text" id="ans-3" placeholder="2-значный код">
-        <button onclick="check3()">РАСШИФРОВАТЬ</button>
+      <div class="ecg-box">
+        <div class="pulse-dot"></div>
+        <span style="font-size: 11px; font-family: monospace; color: #10b981;">ONLINE</span>
       </div>
-      <p id="err-3" style="color: #ff4d4d; margin-top: 10px;" class="hidden">Неверный код доступа.</p>
     </div>
 
-    <!-- ФИНАЛ -->
-    <div id="step-final" class="hidden">
-      <p style="color: var(--amber);">[ПРОТОКОЛ ДАТЫ ИЗВЛЕЧЕН]</p>
-      <div class="release-tag">РЕЛИЗ В STEAM: 10.██.202█</div>
-      <p style="font-size: 12px; margin-bottom: 15px;">Точный месяц и доступ к первой демоверсии будут открыты на странице игры в Steam.</p>
-      <button class="btn-action" style="background: var(--amber); color: #000; font-weight: bold; text-align: center;" onclick="openSteam()">
-        В СПИСОК ЖЕЛАЕМОГО STEAM
+    <!-- СТАТУС ПРОХОЖДЕНИЯ -->
+    <div class="progress-bar">
+      <span id="quest-hint">Изучите архив и разблокируйте Щитовую</span>
+      <span class="step-badge" id="progress-badge">ЭТАП 1 / 4</span>
+    </div>
+
+    <!-- МЕНЮ ВКЛАДОК -->
+    <div class="nav-grid">
+      <button type="button" class="nav-btn active" id="btn-tab-docs" onclick="openTab('docs')">
+        <span class="nav-icon">📋</span>
+        <span>МЕДКАРТЫ</span>
+      </button>
+      <button type="button" class="nav-btn" id="btn-tab-power" onclick="openTab('power')">
+        <span class="nav-icon" id="lock-power">🔒</span>
+        <span>ЩИТОВАЯ</span>
+      </button>
+      <button type="button" class="nav-btn" id="btn-tab-audio" onclick="openTab('audio')">
+        <span class="nav-icon" id="lock-audio">🔒</span>
+        <span>ПЛЕНКИ</span>
+      </button>
+      <button type="button" class="nav-btn" id="btn-tab-safe" onclick="openTab('safe')">
+        <span class="nav-icon" id="lock-safe">🔒</span>
+        <span>СЕЙФ S-7</span>
       </button>
     </div>
-  </div>
 
-  <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) { tg.ready(); tg.expand(); }
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div class="content-area">
 
-    function check1() {
-      const v = document.getElementById('ans-1').value.trim().toLowerCase();
-      if (['тише', 'тихо', 'тишина', 'silence'].includes(v)) {
-        document.getElementById('step-1').classList.add('hidden');
-        document.getElementById('step-2').classList.remove('hidden');
-      } else {
-        document.getElementById('err-1').classList.remove('hidden');
-      }
-    }
+      <!-- ВКЛАДКА 1: ДОКУМЕНТЫ -->
+      <div class="tab-pane active" id="pane-docs">
+        <div class="folder-grid">
+          <button type="button" class="folder-btn selected" id="fbtn-1" onclick="selectDoc(1)">01. Регламент КПП</button>
+          <button type="button" class="folder-btn" id="fbtn-2" onclick="selectDoc(2)">02. Карта «…ЯСН…»</button>
+          <button type="button" class="folder-btn" id="fbtn-3" onclick="selectDoc(3)">03. Схема питания</button>
+          <button type="button" class="folder-btn" id="fbtn-4" onclick="selectDoc(4)">04. Архив допросов</button>
+          <button type="button" class="folder-btn" id="fbtn-5" onclick="selectDoc(5)">05. Сводка карантина</button>
+          <button type="button" class="folder-btn" id="fbtn-6" onclick="selectDoc(6)">06. Протокол сейфа</button>
+        </div>
 
-    function fail() {
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-      alert("Сбой фазы питания. Выберите активную секцию.");
-    }
+        <div class="paper-sheet">
+          <div class="paper-header">
+            <span id="doc-code">ФОРМА № 01-КПП</span>
+            <span>СТЕРИЛЬНАЯ ЗОНА</span>
+          </div>
+          <div id="doc-body"></div>
+        </div>
+      </div>
 
-    function check2() {
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-      document.getElementById('step-2').classList.add('hidden');
-      document.getElementById('step-3').classList.remove('hidden');
-    }
+      <!-- ВКЛАДКА 2: ЩИТОВАЯ -->
+      <div class="tab-pane" id="pane-power">
+        <!-- Экран ввода пароля -->
+        <div class="module-box" id="power-login-box">
+          <div class="module-title">
+            <span>ДОСТУП К ИНЖЕНЕРНОМУ ЩИТУ</span>
+            <span>🔒</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.4;">
+            Для входа введите код смены. Согласно <b>Документам 01 и 02</b>, код состоит из <b>номера текущего изолятора пациента</b> и <b>фамилии врача</b> (слитно, например: <i>402Иванов</i>).
+          </p>
+          <div class="input-group">
+            <input type="text" class="text-input" id="input-power-pass" placeholder="Код (бокс + фамилия)">
+            <button type="button" class="action-btn" onclick="verifyPowerPass()">ОТКРЫТЬ</button>
+          </div>
+          <div class="status-alert" id="alert-power-pass"></div>
+        </div>
 
-    function check3() {
-      const v = document.getElementById('ans-3').value.trim();
-      if (['8', '08', '71'].includes(v)) {
-        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        document.getElementById('step-3').classList.add('hidden');
-        document.getElementById('step-final').classList.remove('hidden');
-      } else {
-        document.getElementById('err-3').classList.remove('hidden');
-      }
-    }
+        <!-- Панель рубильников (открывается после пароля) -->
+        <div class="module-box" id="power-grid-box" style="display: none;">
+          <div class="module-title">
+            <span>БАЛАНСИРОВКА СЕТИ ПОДВАЛА</span>
+            <span style="color: var(--accent-green);">⚡ АКТИВНО</span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+            Подайте ровно <b>75 кВт</b> для запуска магнитофона. Учитывайте правило предохранителя из <b>Документа 03</b>!
+          </p>
 
-    function openSteam() {
-      if (tg) tg.openLink('https://store.steampowered.com/');
-    }
-  </script>
-</body>
-</html>
+          <div class="crt-monitor" style="text-align: center;">
+            <div style="font-size: 11px; color: #94a3b8;">ТЕКУЩАЯ НАГРУЗКА МАГИСТРАЛИ:</div>
+            <div style="font-size: 28px; font-weight: bold; margin: 4px 0;" id="power-kw-val">0 кВт</div>
+            <div style="font-size: 11px; color: #fbbf24;">Требуется для запуска: 75 кВт</div>
+          </div>
+
+          <div class="breaker-item">
+            <span>Линия А: Вентиляция (+30 кВт)</span>
+            <button type="button" class="switch-btn" id="sw-A" onclick="toggleSwitch('A')">ВЫКЛ</button>
+          </div>
+          <div class="breaker-item">
+            <span>Линия Б: Лаборатория (+45 кВт)</span>
+            <button type="button" class="switch-btn" id="sw-B" onclick="toggleSwitch('B')">ВЫКЛ</button>
+          </div>
+          <div class="breaker-item">
+            <span>Линия В: Изолятор (+20 кВт)</span>
+            <button type="button" class="switch-btn" id="sw-C" onclick="toggleSwitch('C')">ВЫКЛ</button>
+          </div>
+          <div class="breaker-item">
+            <span>Линия Г: Сброс нагрузки (-15 кВт)</span>
+            <button type="button" class="switch-btn" id="sw-D" onclick="toggleSwitch('D')">ВЫКЛ</button>
+          </div>
+          <div class="breaker-item">
+            <span>Линия Д: Радиоузел (+10 кВт)</span>
+            <button type="button" class="switch-btn" id="sw-E" onclick="toggleSwitch('E')">ВЫКЛ</button>
+          </div>
+
+          <button type="button" class="action-btn" style="width: 100%; margin-top: 8px;" onclick="activateAudioPower()">
+            ПОДАТЬ ПИТАНИЕ НА ПЛЕНКИ
+          </button>
+          <div class="status-alert" id="alert-power-grid"></div>
+        </div>
+      </div>
+
+      <!-- ВКЛАДКА 3: ПЛЕНКИ (ДЕШИФРАТОР) -->
+      <div class="tab-pane" id="pane-audio">
+        <div class="module-box" id="audio-locked-msg">
+          <div class="module-title"><span>МАГНИТОФОН ОБЕСТОЧЕН</span><span>⚡</span>
