@@ -3,151 +3,171 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>SECTOR 7 - Terminal</title>
-  <!-- Подключение официального SDK Telegram Web App -->
+  <title>SECTOR 7 // UFILAG</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    :root {
+      --bg: #121417;
+      --panel: #1a1e24;
+      --amber: #ff9d00;
+      --amber-dim: #704500;
+      --text: #e0e6ed;
+      --border: #2c3440;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0b0c10;
-      color: #39ff14;
-      font-family: 'Courier New', Courier, monospace;
-      margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Consolas', 'Courier New', monospace;
+      padding: 16px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
     }
-    .crt-overlay {
+    .crt-line {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background: linear-gradient(rgba(18, 20, 23, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
       background-size: 100% 4px;
       pointer-events: none;
     }
-    .header {
-      border-bottom: 2px solid #39ff14;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .panel-header {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 12px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--amber);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
     }
-    .console-box {
+    .screen {
       flex: 1;
+      border: 1px solid var(--border);
+      background: #0d0f12;
+      padding: 16px;
       overflow-y: auto;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
-    .input-group {
-      margin-top: 15px;
+    .input-box {
+      margin-top: 16px;
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
     input[type="text"] {
       flex: 1;
-      background: #1f2833;
-      border: 1px solid #39ff14;
-      color: #fff;
-      padding: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--amber);
+      padding: 12px;
       font-family: inherit;
       outline: none;
       font-size: 14px;
     }
+    input[type="text"]:focus {
+      border-color: var(--amber);
+    }
     button {
-      background: #39ff14;
-      color: #0b0c10;
+      background: var(--amber);
+      color: #000;
       border: none;
-      padding: 10px 15px;
+      padding: 12px 18px;
       font-weight: bold;
       font-family: inherit;
       cursor: pointer;
     }
-    .btn-choice {
+    .btn-action {
       display: block;
       width: 100%;
-      background: #1f2833;
-      color: #39ff14;
-      border: 1px solid #39ff14;
-      padding: 10px;
-      margin: 8px 0;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 12px;
+      margin: 10px 0;
       text-align: left;
       font-family: inherit;
+      cursor: pointer;
     }
-    .btn-choice:active {
-      background: #39ff14;
-      color: #000;
+    .btn-action:active {
+      border-color: var(--amber);
+      color: var(--amber);
     }
-    .secret-date {
-      color: #ff3333;
-      font-size: 18px;
+    .release-tag {
+      background: #1f1200;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      padding: 16px;
+      text-align: center;
+      font-size: 20px;
+      letter-spacing: 3px;
+      margin: 20px 0;
       font-weight: bold;
-      letter-spacing: 2px;
-      margin: 15px 0;
-      background: #111;
-      padding: 10px;
-      border: 1px dashed #ff3333;
     }
     .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="crt-overlay"></div>
-  <div class="header">UFILAG // SUB-LEVEL 7 ARCHIVE</div>
+  <div class="crt-line"></div>
+  <div class="panel-header">
+    <span>UFILAG SYSTEMS</span>
+    <span>SYS.VER: 7.02</span>
+  </div>
 
-  <div id="content" class="console-box">
-    <!-- Шаг 1 -->
+  <div class="screen">
+    <!-- ЭТАП 1 -->
     <div id="step-1">
-      <p>[ОШИБКА ШИФРОВАНИЯ] Сессия изолированного корпуса прервана.</p>
-      <p>Браслет пациента: <b>«...ЯСН...»</b>.</p>
-      <p>Запись системы: <i>«Сестра настаивает на изоляции. Кодовое слово допуска совпадает с фразой, которой она заставляла молчать...»</i></p>
-      <div class="input-group">
-        <input type="text" id="ans-1" placeholder="Введите кодовое слово">
-        <button onclick="checkStep1()">ВВОД</button>
+      <p style="color: var(--amber);">[АРХИВНЫЙ ТЕРМИНАЛ: ИЗОЛЯТОР SECTOR 7]</p><br>
+      <p>Инициализация протокола допуска. Пациент: <b>«...ЯСН...»</b>.</p>
+      <p>Примечание старшей сестры: <i>«Блокировка памяти активна. Голосовой ключ совпадает со словом, возвращающим послушание...»</i></p>
+      
+      <div class="input-box">
+        <input type="text" id="ans-1" placeholder="Голосовой ключ">
+        <button onclick="check1()">ВВОД</button>
       </div>
-      <p id="err-1" style="color: red;" class="hidden">Отказ доступа. Вспомните, как она успокаивала брата.</p>
+      <p id="err-1" style="color: #ff4d4d; margin-top: 10px;" class="hidden">Отказ доступа: неверный ключ допуска.</p>
     </div>
 
-    <!-- Шаг 2 -->
+    <!-- ЭТАП 2 -->
     <div id="step-2" class="hidden">
-      <p style="color: #66fcf1;">ДОСТУП РАЗРЕШЕН: «Тише. Мы с тобой вместе» принят.</p>
-      <p>В подвале обесточен сектор хранения резервных копий. Выберите сектор для подачи резервного питания:</p>
-      <button class="btn-choice" onclick="wrongChoice()">[ ] Лифт служебного выхода</button>
-      <button class="btn-choice" onclick="checkStep2()">[X] Щит подвала (Секция 3 - Изолятор)</button>
-      <button class="btn-choice" onclick="wrongChoice()">[ ] Генераторная вентиляции</button>
+      <p style="color: var(--amber);">[КЛЮЧ ПРИНЯТ: «Тише»]</p><br>
+      <p>Главная магистраль обесточена. Для разблокировки шлюза направьте напряжение на распределительный узел:</p>
+      <button class="btn-action" onclick="fail()">[01] Серверная перфокарт</button>
+      <button class="btn-action" onclick="check2()">[03] Щитовая изолятора (Блок 3)</button>
+      <button class="btn-action" onclick="fail()">[05] Пневмопочта администрации</button>
     </div>
 
-    <!-- Шаг 3 -->
+    <!-- ЭТАП 3 -->
     <div id="step-3" class="hidden">
-      <p style="color: #66fcf1;">ПИТАНИЕ ПОДАНО. Замок дежурного открыт.</p>
-      <p>Записка охранника: <i>«Код доступа равен номеру сектора (7) плюс число охранников на КПП у выхода (1)».</i></p>
-      <div class="input-group">
-        <input type="text" id="ans-3" placeholder="Введите 2-значный код">
-        <button onclick="checkStep3()">РАСШИФРОВАТЬ</button>
+      <p style="color: var(--amber);">[ПИТАНИЕ ПОДАНО. ШЛЮЗ РАЗБЛОКИРОВАН]</p><br>
+      <p>Внутренний журнал безопасности: <i>«Код аварийного дампа равен номеру блока (7) плюс число оставшихся дежурных на выходе (1)»</i>.</p>
+      
+      <div class="input-box">
+        <input type="text" id="ans-3" placeholder="2-значный код">
+        <button onclick="check3()">РАСШИФРОВАТЬ</button>
       </div>
-      <p id="err-3" style="color: red;" class="hidden">Неверный код.</p>
+      <p id="err-3" style="color: #ff4d4d; margin-top: 10px;" class="hidden">Неверный код доступа.</p>
     </div>
 
-    <!-- Финал -->
+    <!-- ФИНАЛ -->
     <div id="step-final" class="hidden">
-      <p style="color: #66fcf1;">ВЗЛОМ ЗАВЕРШЕН. ИЗВЛЕЧЕН ФАЙЛ РЕЛИЗА:</p>
-      <div class="secret-date">РЕЛИЗ В STEAM: 10.██.202█</div>
-      <p>👁️ <b>День подтвержден: 10-е число.</b></p>
-      <p>Месяц и точный год заблокированы. Следите за обновлениями на странице игры в Steam!</p>
-      <button class="btn-choice" style="background: #39ff14; color: #000; text-align: center;" onclick="openSteam()">
-        🔗 ПЕРЕЙТИ В STEAM / ВИШЛИСТ
+      <p style="color: var(--amber);">[ПРОТОКОЛ ДАТЫ ИЗВЛЕЧЕН]</p>
+      <div class="release-tag">РЕЛИЗ В STEAM: 10.██.202█</div>
+      <p style="font-size: 12px; margin-bottom: 15px;">Точный месяц и доступ к первой демоверсии будут открыты на странице игры в Steam.</p>
+      <button class="btn-action" style="background: var(--amber); color: #000; font-weight: bold; text-align: center;" onclick="openSteam()">
+        В СПИСОК ЖЕЛАЕМОГО STEAM
       </button>
     </div>
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand(); // Разворачиваем на весь экран
+    const tg = window.Telegram?.WebApp;
+    if (tg) { tg.ready(); tg.expand(); }
 
-    function checkStep1() {
-      const val = document.getElementById('ans-1').value.trim().toLowerCase();
-      if (['тише', 'тихо', 'тишина', 'silence'].includes(val)) {
+    function check1() {
+      const v = document.getElementById('ans-1').value.trim().toLowerCase();
+      if (['тише', 'тихо', 'тишина', 'silence'].includes(v)) {
         document.getElementById('step-1').classList.add('hidden');
         document.getElementById('step-2').classList.remove('hidden');
       } else {
@@ -155,21 +175,21 @@
       }
     }
 
-    function wrongChoice() {
-      tg.HapticFeedback.notificationOccurred('error');
-      alert("⚡ Перегрузка сектора! Выберите нужную линию.");
+    function fail() {
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+      alert("Сбой фазы питания. Выберите активную секцию.");
     }
 
-    function checkStep2() {
-      tg.HapticFeedback.notificationOccurred('success');
+    function check2() {
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
       document.getElementById('step-2').classList.add('hidden');
       document.getElementById('step-3').classList.remove('hidden');
     }
 
-    function checkStep3() {
-      const val = document.getElementById('ans-3').value.trim();
-      if (['8', '08', '71'].includes(val)) {
-        tg.HapticFeedback.notificationOccurred('success');
+    function check3() {
+      const v = document.getElementById('ans-3').value.trim();
+      if (['8', '08', '71'].includes(v)) {
+        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         document.getElementById('step-3').classList.add('hidden');
         document.getElementById('step-final').classList.remove('hidden');
       } else {
@@ -178,8 +198,7 @@
     }
 
     function openSteam() {
-      // Замени на реальную ссылку магазина, когда создашь страницу
-      tg.openLink('https://store.steampowered.com/');
+      if (tg) tg.openLink('https://store.steampowered.com/');
     }
   </script>
 </body>
